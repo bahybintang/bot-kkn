@@ -1,6 +1,6 @@
 # How to Run
 ```bash
-docker build -t bot-kkn .
+docker build -t bot-kkn --no-cache .
 docker run bot-kkn
 ```
 
