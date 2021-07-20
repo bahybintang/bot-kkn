@@ -1,6 +1,6 @@
 # How to Run
 ```bash
-docker build bot-kkn .
+docker build -t bot-kkn .
 docker run bot-kkn
 ```
 
