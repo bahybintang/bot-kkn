@@ -22,7 +22,7 @@ const start = (client) => {
       message.isGroupMsg
     ) {
       try {
-        let dt = moment({ hour: 0 });
+        let dt = moment({ hour: 0 }).utcOffset(60 * 7);
         let schedule = await getScheduleByDate(dt);
         const result = await client.sendText(
           message.from,
@@ -37,7 +37,9 @@ const start = (client) => {
       message.isGroupMsg
     ) {
       try {
-        let dt = moment({ hour: 0 }).add(1, "days");
+        let dt = moment({ hour: 0 })
+          .utcOffset(60 * 7)
+          .add(1, "days");
         let schedule = await getScheduleByDate(dt);
         const result = await client.sendText(
           message.from,
@@ -57,7 +59,9 @@ const start = (client) => {
       message.isGroupMsg
     ) {
       try {
-        let dt = moment(message.body.split(" ")[1], "DD-MM-YYYY");
+        let dt = moment(message.body.split(" ")[1], "DD-MM-YYYY").utcOffset(
+          60 * 7
+        );
         let schedule = await getScheduleByDate(dt);
         const result = await client.sendText(
           message.from,

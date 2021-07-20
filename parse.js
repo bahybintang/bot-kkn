@@ -29,8 +29,6 @@ const getProkerData = async () => {
     let row = prokerSheet.getRow(i);
     if (!row.getCell(3).value) break;
 
-    // console.log(row.getCell(1).value);
-
     if (row.getCell(1).value != curMhs) {
       curMhs = row.getCell(1).value;
       curProkerCnt = 0;
@@ -59,7 +57,7 @@ const getProkerData = async () => {
 
 const getScheduleByDate = async (date) => {
   const prokerData = await getProkerData();
-  const diff = date.diff(moment("2021-07-14"), "days");
+  const diff = date.diff(moment("2021-07-14").utcOffset(60 * 7), "days");
   let workbook = new Excel.Workbook();
   await workbook.xlsx.readFile("./data.xlsx");
   let workSheet = workbook.getWorksheet("Timeline");
