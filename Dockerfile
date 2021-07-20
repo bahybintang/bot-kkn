@@ -9,6 +9,8 @@ COPY index.js .
 COPY logger.js .
 COPY parse.js .
 
+RUN apk add --no-cache  chromium --repository=http://dl-cdn.alpinelinux.org/alpine/v3.10/main
+
 RUN npm install
 
 CMD [ "npm", "start" ]
