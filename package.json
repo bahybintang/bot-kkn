@@ -10,10 +10,10 @@
   "author": "bintang",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^10.0.0",
     "exceljs": "^4.2.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
-    "moment-timezone": "^0.5.33",
     "venom-bot": "^3.0.21",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"

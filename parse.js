@@ -1,7 +1,6 @@
 const Excel = require("exceljs");
 const _ = require("lodash");
-const moment = require("moment-timezone");
-moment.tz.setDefault("Asia/Jakarta");
+const moment = require("moment");
 
 const getProkerData = async () => {
   let workbook = new Excel.Workbook();
@@ -57,7 +56,7 @@ const getProkerData = async () => {
 
 const getScheduleByDate = async (date) => {
   const prokerData = await getProkerData();
-  const diff = date.diff(moment("2021-07-14").utcOffset(60 * 7), "days");
+  const diff = date.diff(moment("2021-07-14"), "days");
   let workbook = new Excel.Workbook();
   await workbook.xlsx.readFile("./data.xlsx");
   let workSheet = workbook.getWorksheet("Timeline");

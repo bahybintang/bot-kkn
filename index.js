@@ -1,9 +1,10 @@
 const venom = require("venom-bot");
-const moment = require("moment-timezone");
+const moment = require("moment");
 const { errorLogger, successLogger } = require("./logger");
 const { getScheduleByDate } = require("./parse");
+require("dotenv").config();
 
-moment.tz.setDefault("Asia/Jakarta");
+const HOUR_DIFF = process.env.HOUR_DIFF;
 
 venom
   .create()
@@ -22,7 +23,7 @@ const start = (client) => {
       message.isGroupMsg
     ) {
       try {
-        let dt = moment({ hour: 0 }).utcOffset(60 * 7);
+        let dt = moment({ hour: 0 }).add(HOUR_DIFF, "hours");
         let schedule = await getScheduleByDate(dt);
         const result = await client.sendText(
           message.from,
@@ -37,9 +38,7 @@ const start = (client) => {
       message.isGroupMsg
     ) {
       try {
-        let dt = moment({ hour: 0 })
-          .utcOffset(60 * 7)
-          .add(1, "days");
+        let dt = moment({ hour: 0 }).add(HOUR_DIFF, "hours").add(1, "days");
         let schedule = await getScheduleByDate(dt);
         const result = await client.sendText(
           message.from,
