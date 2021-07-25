@@ -16,6 +16,7 @@ venom
 const start = (client) => {
   client.onMessage(async (message) => {
     try {
+      // console.log(message);
       handleMessage(client, message);
     } catch (error) {
       errorLogger.error(error);
@@ -33,9 +34,9 @@ const handleMessage = async (client, message) => {
   ) {
     let dt = moment().add(HOUR_DIFF, "hours").startOf("day");
     let schedule = await getScheduleByDate(dt);
-    const result = await client.sendText(
+    const result = await client.sendMentioned(
       message.from,
-      getScheduleMessage(schedule, dt)
+      ...getScheduleMessage(schedule, dt)
     );
     successLogger.info(result);
   } else if (
@@ -44,9 +45,9 @@ const handleMessage = async (client, message) => {
   ) {
     let dt = moment().add(HOUR_DIFF, "hours").startOf("day").add(1, "days");
     let schedule = await getScheduleByDate(dt);
-    const result = await client.sendText(
+    const result = await client.sendMentioned(
       message.from,
-      getScheduleMessage(schedule, dt)
+      ...getScheduleMessage(schedule, dt)
     );
     successLogger.info(result);
   } else if (
@@ -63,9 +64,9 @@ const handleMessage = async (client, message) => {
       "DD-MM-YYYY"
     );
     let schedule = await getScheduleByDate(dt);
-    const result = await client.sendText(
+    const result = await client.sendMentioned(
       message.from,
-      getScheduleMessage(schedule, dt)
+      ...getScheduleMessage(schedule, dt)
     );
     successLogger.info(result);
   } else if (message.body.toLowerCase() == "/help" && message.isGroupMsg) {
@@ -82,33 +83,69 @@ const handleMessage = async (client, message) => {
    command: _*Jadwal DD/MM/YYYY*_ atau _*Jadwal DD-MM-YYYY*_`
     );
     successLogger.info(result);
+  } else if (message.body.toLowerCase() == "/test" && message.isGroupMsg) {
+    const result = await client.sendMentioned(
+      message.from,
+      `Halo @6285156554704 dan @6289671539470`,
+      ["6285156554704", "6289671539470"]
+    );
+    successLogger.info(result);
   }
 };
 
 const getScheduleMessage = (schedule, date) => {
+  let mentionList = [];
   let message = `*JADWAL PROKER ${date.format("DD-MM-YYYY")}*\n\n`;
   message += "*Slot pagi (00:00 - 08:00):*\n";
   Object.keys(schedule.pagi).forEach((key, idx) => {
-    message += `${idx + 1}. PIC: ${key}
+    // Add to mention list
+    if (!mentionList.includes(key)) mentionList.push(key);
+    for (let b of schedule.pagi[key].bantu) {
+      if (!mentionList.includes(b)) mentionList.push(b);
+    }
+
+    // Message
+    message += `${idx + 1}. PIC: @${key}
    Nama Proker: ${schedule.pagi[key].proker_name}
    Nama Kegiatan: ${schedule.pagi[key].kegiatan_name}
-   Bantu: ${schedule.pagi[key].bantu.join(", ")}\n\n`;
+   Bantu: ${schedule.pagi[key].bantu.length ? "@" : "-"}${schedule.pagi[
+      key
+    ].bantu.join(", @")}\n\n`;
   });
 
   message += "*Slot siang (08:00 - 16:00):*\n";
   Object.keys(schedule.siang).forEach((key, idx) => {
-    message += `${idx + 1}. PIC: ${key}
+    // Add to mention list
+    if (!mentionList.includes(key)) mentionList.push(key);
+    for (let b of schedule.siang[key].bantu) {
+      if (!mentionList.includes(b)) mentionList.push(b);
+    }
+
+    // Message
+    message += `${idx + 1}. PIC: @${key}
    Nama Proker: ${schedule.siang[key].proker_name}
    Nama Kegiatan: ${schedule.siang[key].kegiatan_name}
-   Bantu: ${schedule.siang[key].bantu.join(", ")}\n\n`;
+   Bantu: ${schedule.siang[key].bantu.length ? "@" : "-"}${schedule.siang[
+      key
+    ].bantu.join(", @")}\n\n`;
   });
 
   message += "*Slot malam (16:00 - 24:00):*\n";
   Object.keys(schedule.malam).forEach((key, idx) => {
-    message += `${idx + 1}. PIC: ${key}
+    // Add to mention list
+    if (!mentionList.includes(key)) mentionList.push(key);
+    for (let b of schedule.malam[key].bantu) {
+      if (!mentionList.includes(b)) mentionList.push(b);
+    }
+
+    // Message
+    message += `${idx + 1}. PIC: @${key}
    Nama Proker: ${schedule.malam[key].proker_name}
    Nama Kegiatan: ${schedule.malam[key].kegiatan_name}
-   Bantu: ${schedule.malam[key].bantu.join(", ")}\n\n`;
+   Bantu: ${schedule.malam[key].bantu.length ? "@" : "-"}${schedule.malam[
+      key
+    ].bantu.join(", @")}\n\n`;
   });
-  return message;
+
+  return [message, mentionList];
 };

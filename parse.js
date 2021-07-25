@@ -2,6 +2,8 @@ const Excel = require("exceljs");
 const _ = require("lodash");
 const moment = require("moment");
 
+const phoneNumberMap = require("./phoneNumberMap");
+
 const getProkerData = async () => {
   let workbook = new Excel.Workbook();
   await workbook.xlsx.readFile("./data.xlsx");
@@ -40,8 +42,8 @@ const getProkerData = async () => {
     curKegiatanName = row.getCell(3).value;
     prokerData = {
       ...prokerData,
-      [curMhs]: {
-        ...prokerData[curMhs],
+      [phoneNumberMap[curMhs]]: {
+        ...prokerData[phoneNumberMap[curMhs]],
         [`${curProkerCnt}${alphabet[curKegiatanCnt]}`]: {
           proker_name: curProkerName,
           kegiatan_name: curKegiatanName,
@@ -69,6 +71,7 @@ const getScheduleByDate = async (date) => {
     let color = _.get(cell, "style.fill.fgColor.argb", null);
     let value = cell.value;
     if (!!color && !!value) {
+      value = phoneNumberMap[value];
       colorCode[color] = value;
       if (!mahasiswaList.includes(value)) {
         mahasiswaList.push(value);
