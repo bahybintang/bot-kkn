@@ -8,6 +8,7 @@ COPY data.xlsx .
 COPY index.js .
 COPY logger.js .
 COPY parse.js .
+COPY phoneNumberMap.js .
 COPY .env .
 
 RUN apk add --no-cache  chromium --repository=http://dl-cdn.alpinelinux.org/alpine/v3.10/main
